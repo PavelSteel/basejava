@@ -11,7 +11,7 @@ public class ArrayStorage {
     }
 
     void save(Resume r) {
-        for (int i = 0; i < storage.length-1; i++) {
+        for (int i = 0; i < storage.length - 1; i++) {
             if (storage[i] == null) {
                 storage[i] = r;
                 break;
@@ -20,8 +20,15 @@ public class ArrayStorage {
     }
 
     Resume get(String uuid) {
-
-        return null;
+        Resume g = new Resume();
+        for (int i = 0; i < storage.length - 1; i++) {
+            if (storage[i].toString() == uuid) {
+                g = storage[i];
+            } else {
+                g = null;
+            }
+        }
+        return g;
     }
 
     void delete(String uuid) {
