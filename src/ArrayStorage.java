@@ -8,19 +8,18 @@ public class ArrayStorage {
     int size = 0;
 
     void clear() {
-        for (int i = 0; i < storage.length - 1; i++) {
+        for (int i = 0; i < size; i++) {
             storage[i] = null;
         }
         size = 0;
     }
 
     void save(Resume r) {
-        for (int i = 0; i < storage.length - 1; i++) {
-            if (storage[i] == null) {
-                storage[i] = r;
-                size++;
-                break;
-            }
+        if (size < storage.length) {
+            storage[size] = r;
+            size++;
+        } else {
+            System.out.println("Array is full!");
         }
     }
 
@@ -33,20 +32,17 @@ public class ArrayStorage {
         return null;
     }
 
-    void delete(String uuid) {
+    void delete(String uuid) {             //если удаляется последнее резюме. следовательно нужна проверка. что оно не последнее
         for (int i = 0; i < size; i++) {
-            if (i != storage.length - 1) {
-                if (storage[i].uuid.equals(uuid)) {
-                    for (int j = i; j < storage.length - 1; j++) {
-                        storage[j] = storage[j + 1];
-                    }
-                    size--;
-                }
-            } else {
-                if (storage[i].uuid.equals(uuid)) {
+            if (storage[i].uuid.equals(uuid)) {
+                if (i == size - 1) {
                     storage[i] = null;
-                    size--;
+                } else {
+                    storage[i] = storage[size-1];
+                    storage[size-1] = null;
                 }
+                size--;
+                break;
             }
         }
     }
@@ -55,7 +51,7 @@ public class ArrayStorage {
      * @return array, contains only Resumes in storage (without null)
      */
     Resume[] getAll() {
-        return Arrays.copyOf(storage, size());
+        return Arrays.copyOf(storage, size);
     }
 
     int size() {
