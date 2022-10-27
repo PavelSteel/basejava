@@ -32,14 +32,15 @@ public class ArrayStorage {
         return null;
     }
 
-    void delete(String uuid) {             //если удаляется последнее резюме. следовательно нужна проверка. что оно не последнее
+    //если удаляется последнее резюме. следовательно нужна проверка. что оно не последнее
+    void delete(String uuid) {
         for (int i = 0; i < size; i++) {
             if (storage[i].uuid.equals(uuid)) {
                 if (i == size - 1) {
                     storage[i] = null;
                 } else {
-                    storage[i] = storage[size-1];
-                    storage[size-1] = null;
+                    storage[i] = storage[size - 1];
+                    storage[size - 1] = null;
                 }
                 size--;
                 break;
