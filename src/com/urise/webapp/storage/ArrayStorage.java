@@ -33,7 +33,7 @@ public class ArrayStorage {
 
     public Resume get(String uuid) {
         for (int i = 0; i < size; i++) {
-            if (contains(i, uuid)) {
+            if (coincide(i, uuid)) {
                 return storage[i];
             }
         }
@@ -42,7 +42,7 @@ public class ArrayStorage {
 
     public void delete(String uuid) {
         for (int i = 0; i < size; i++) {
-            if (contains(i, uuid)) {
+            if (coincide(i, uuid)) {
                 storage[i] = storage[size - 1];
                 storage[size - 1] = null;
                 size--;
@@ -62,11 +62,9 @@ public class ArrayStorage {
         return size;
     }
 
-    private boolean contains(int i, String uuid) {
-        if (storage[i].getUuid().equals(uuid)) {
-            return true;
-        } else {
-            return false;
-        }
+    private boolean coincide(int i, String uuid) {
+        return storage[i].getUuid().equals(uuid);
     }
+
+
 }
