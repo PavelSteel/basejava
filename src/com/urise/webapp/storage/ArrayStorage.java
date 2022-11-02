@@ -19,25 +19,40 @@ public class ArrayStorage {
     }
 
     public void update(Resume resume) {
-
+        for (int i = 0; i < size; i++) {
+            if (coincide(i, resume.getUuid())) {
+                storage[i] = resume;
+            } else {
+                printNotResume(resume.getUuid());
+            }
+        }
     }
 
     public void save(Resume r) {
         if (size < storage.length) {
-            storage[size] = r;
-            size++;
+            if (!contains(r.getUuid())) {
+                storage[size] = r;
+                size++;
+            } else {
+                System.out.println("This resume is already there!");
+            }
         } else {
             System.out.println("Array is full!");
         }
     }
 
     public Resume get(String uuid) {
+        Resume resume = new Resume();
         for (int i = 0; i < size; i++) {
             if (coincide(i, uuid)) {
-                return storage[i];
+                resume = storage[i];
+            } else {
+                resume = null;
+                printNotResume(uuid);
+                break;
             }
         }
-        return null;
+        return resume;
     }
 
     public void delete(String uuid) {
@@ -46,6 +61,9 @@ public class ArrayStorage {
                 storage[i] = storage[size - 1];
                 storage[size - 1] = null;
                 size--;
+                break;
+            } else {
+                printNotResume(uuid);
             }
         }
 
@@ -64,6 +82,21 @@ public class ArrayStorage {
 
     private boolean coincide(int i, String uuid) {
         return storage[i].getUuid().equals(uuid);
+    }
+
+    private void printNotResume(String uuid) {
+        System.out.println("No such resume " + uuid);
+    }
+
+    private boolean contains(String uuid) {
+        boolean b = false;
+        for (int i = 0; i < size; i++) {
+            if (storage[i].getUuid().equals(uuid)) {
+                b = true;
+                break;
+            }
+        }
+        return b;
     }
 
 
