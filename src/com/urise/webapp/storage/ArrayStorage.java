@@ -19,53 +19,47 @@ public class ArrayStorage {
     }
 
     public void update(Resume resume) {
-        for (int i = 0; i < size; i++) {
-            if (coincide(i, resume.getUuid())) {
-                storage[i] = resume;
-            } else {
-                printNotResume(resume.getUuid());
-            }
+        int index = getIndex(resume.getUuid());
+        if (index != -1) {
+            storage[index] = resume;
+            System.out.println("Resume " + resume + " updated.");
+        } else {
+            printNotResume(resume.getUuid());
         }
+
     }
 
     public void save(Resume r) {
-        if (size < storage.length) {
-            if (!contains(r.getUuid())) {
-                storage[size] = r;
-                size++;
-            } else {
-                System.out.println("This resume is already there!");
-            }
-        } else {
+        if (size == storage.length) {
             System.out.println("Array is full!");
+        } else if (getIndex(r.getUuid()) != -1) {
+            System.out.println("This resume is already there!");
+        } else {
+            storage[size] = r;
+            size++;
         }
+
     }
 
     public Resume get(String uuid) {
-        Resume resume = new Resume();
-        for (int i = 0; i < size; i++) {
-            if (coincide(i, uuid)) {
-                resume = storage[i];
-            } else {
-                resume = null;
-                printNotResume(uuid);
-                break;
-            }
+        int index = getIndex(uuid);
+        if (index == -1) {
+            printNotResume(uuid);
+            return null;
         }
-        return resume;
+        return storage[index];
     }
 
     public void delete(String uuid) {
-        for (int i = 0; i < size; i++) {
-            if (coincide(i, uuid)) {
-                storage[i] = storage[size - 1];
-                storage[size - 1] = null;
-                size--;
-                break;
-            } else {
-                printNotResume(uuid);
-            }
+        int index = getIndex(uuid);
+        if (index != -1) {
+            storage[index] = storage[size - 1];
+            storage[size - 1] = null;
+            size--;
+        } else {
+            printNotResume(uuid);
         }
+
 
     }
 
@@ -80,23 +74,17 @@ public class ArrayStorage {
         return size;
     }
 
-    private boolean coincide(int i, String uuid) {
-        return storage[i].getUuid().equals(uuid);
-    }
-
     private void printNotResume(String uuid) {
         System.out.println("No such resume " + uuid);
     }
 
-    private boolean contains(String uuid) {
-        boolean b = false;
+    private int getIndex(String uuid) {
         for (int i = 0; i < size; i++) {
             if (storage[i].getUuid().equals(uuid)) {
-                b = true;
-                break;
+                return i;
             }
         }
-        return b;
+        return -1;
     }
 
 
