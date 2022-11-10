@@ -5,8 +5,7 @@ import com.urise.webapp.model.Resume;
 /**
  * Array based storage for Resumes
  */
-interface Storage {
-
+public interface Storage {
 
     void clear();
 
