@@ -7,16 +7,6 @@ import com.urise.webapp.model.Resume;
  */
 public class ArrayStorage extends AbstractArrayStorage {
 
-    public void update(Resume resume) {
-        int index = getIndex(resume.getUuid());
-        if (index != -1) {
-            storage[index] = resume;
-            System.out.println("Resume " + resume + " updated.");
-        } else {
-            printNotResume(resume.getUuid());
-        }
-    }
-
     public void save(Resume r) {
         if (size == STORAGE_LIMIT) {
             System.out.println("Array is full!");
