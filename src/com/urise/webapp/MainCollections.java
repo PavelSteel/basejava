@@ -2,10 +2,7 @@ package com.urise.webapp;
 
 import com.urise.webapp.model.Resume;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Objects;
+import java.util.*;
 
 public class MainCollections {
     private static final String UUID_1 = "uuid1";
@@ -36,5 +33,14 @@ public class MainCollections {
             }
         }
         System.out.println(collection.toString());
+
+        Map<String, Resume> map = new HashMap<>();
+        map.put(UUID_1, RESUME_1);
+        map.put(UUID_2, RESUME_2);
+        map.put(UUID_3, RESUME_3);
+
+        for (Map.Entry<String, Resume> entry : map.entrySet()) {
+            System.out.println(entry.getValue());
+        }
     }
 }
