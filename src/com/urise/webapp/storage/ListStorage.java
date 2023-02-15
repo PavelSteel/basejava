@@ -2,54 +2,59 @@ package com.urise.webapp.storage;
 
 import com.urise.webapp.model.Resume;
 
-public class ListStorage extends AbstractStorage{
-    @Override
-    public void clear() {
+import java.util.ArrayList;
+import java.util.List;
 
-    }
-
-    @Override
-    public void update(Resume resume) {
-
-    }
+public class ListStorage extends AbstractStorage {
+    private List<Resume> list = new ArrayList<>();
 
     @Override
-    public void save(Resume r) {
-
-    }
-
-    @Override
-    public Resume get(String uuid) {
+    protected Integer getSearchKey(String uuid) {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getUuid().equals(uuid)) {
+                return i;
+            }
+        }
         return null;
     }
 
     @Override
-    public void delete(String uuid) {
+    protected boolean isExist(Object searchKey) {
+        return searchKey != null;
+    }
 
+    @Override
+    protected void doUpdate(Resume resume, Object searchKey) {
+        list.set((Integer) searchKey, resume);
+    }
+
+    @Override
+    protected Resume doGet(Object searchKey) {
+        return list.get((Integer) searchKey);
+    }
+
+    @Override
+    protected void doDelete(Object searchKey) {
+        list.remove(((Integer) searchKey).intValue());
+    }
+
+    @Override
+    protected void doSave(Resume r, Object searchKey) {
+        list.set((Integer) searchKey, r);
+    }
+
+    @Override
+    public void clear() {
+        list.clear();
     }
 
     @Override
     public Resume[] getAll() {
-        return new Resume[0];
+        return list.toArray(new Resume[list.size()]);
     }
 
     @Override
     public int size() {
-        return 0;
-    }
-
-    @Override
-    protected int getIndex(String uuid) {
-        return 0;
-    }
-
-    @Override
-    protected void fillDeletedElement(int index) {
-
-    }
-
-    @Override
-    protected void insertElement(Resume r, int index) {
-
+        return list.size();
     }
 }
