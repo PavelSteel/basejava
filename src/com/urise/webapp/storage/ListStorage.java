@@ -40,7 +40,7 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     protected void doSave(Resume r, Object searchKey) {
-        list.set((Integer) searchKey, r);
+        list.add(r);
     }
 
     @Override
