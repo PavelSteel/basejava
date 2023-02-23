@@ -42,5 +42,18 @@ public class MainCollections {
         for (Map.Entry<String, Resume> entry : map.entrySet()) {
             System.out.println(entry.getValue());
         }
+
+     //   List<Resume> list = new ArrayList<>();
+//        Resume[] array = new Resume[map.size()];
+//        int x = 0;
+//
+//        for (Map.Entry<String, Resume> entry : map.entrySet()) {
+//            if (x< map.size()){
+//                array[x] = entry.getValue();
+//            }
+//        }
+
+//        System.out.println(array.length);
+
     }
 }
