@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class MapStorage extends AbstractStorage {
-    private Map<String, Resume> map = new TreeMap<>();
+    private final Map<String, Resume> map = new TreeMap<>();
 
     @Override
     protected Resume doGet(Object searchKey) {
