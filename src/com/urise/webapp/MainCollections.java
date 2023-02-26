@@ -6,13 +6,13 @@ import java.util.*;
 
 public class MainCollections {
     private static final String UUID_1 = "uuid1";
-    private static final Resume RESUME_1 = new Resume(UUID_1);
+    private static final Resume RESUME_1 = new Resume(UUID_1, "Name1");
 
     private static final String UUID_2 = "uuid2";
-    private static final Resume RESUME_2 = new Resume(UUID_2);
+    private static final Resume RESUME_2 = new Resume(UUID_2, "Name2");
 
     private static final String UUID_3 = "uuid3";
-    private static final Resume RESUME_3 = new Resume(UUID_3);
+    private static final Resume RESUME_3 = new Resume(UUID_3, "Name3");
 
 
     public static void main(String[] args) {
@@ -42,18 +42,5 @@ public class MainCollections {
         for (Map.Entry<String, Resume> entry : map.entrySet()) {
             System.out.println(entry.getValue());
         }
-
-     //   List<Resume> list = new ArrayList<>();
-//        Resume[] array = new Resume[map.size()];
-//        int x = 0;
-//
-//        for (Map.Entry<String, Resume> entry : map.entrySet()) {
-//            if (x< map.size()){
-//                array[x] = entry.getValue();
-//            }
-//        }
-
-//        System.out.println(array.length);
-
     }
 }
