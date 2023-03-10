@@ -5,8 +5,11 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+
 import java.io.Reader;
 import java.io.Writer;
+
+import static javax.xml.bind.JAXBContext.newInstance;
 
 public class XmlParser {
     private final Marshaller marshaller;
@@ -14,7 +17,7 @@ public class XmlParser {
 
     public XmlParser(Class... classesToBeBound) {
         try {
-            JAXBContext ctx = JAXBContext.newInstance(classesToBeBound);
+            JAXBContext ctx = newInstance(classesToBeBound);
 
             marshaller = ctx.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
