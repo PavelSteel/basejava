@@ -6,9 +6,13 @@ import java.util.List;
 public class MainConcurrency {
     public static final int THREADS = 10000;
     private static int counter;
+
+    public MainConcurrency() {
+    }
+
     public static void main(String[] args) throws InterruptedException {
         System.out.println(Thread.currentThread().getName());
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
                 System.out.println(getName());
@@ -37,9 +41,34 @@ public class MainConcurrency {
 
         System.out.println(counter);
 
+        String lock1 = "lock_1";
+        String lock2 = "lock_2";
+        deadLocking(lock1, lock2);
+        deadLocking(lock2, lock1);
+
+
     }
 
-    private synchronized void inc(){
+    private static void deadLocking(String lock1, String lock2) {
+        new Thread(() -> {
+            System.out.println("Waiting: " + lock1);
+            synchronized (lock1) {
+                System.out.println("Hold: " + lock1);
+                System.out.println("Waiting: " + lock2);
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                synchronized (lock2) {
+                    System.out.println("Hold: " + lock2);
+                }
+            }
+        }).start();
+    }
+
+    private synchronized void inc() {
         counter++;
     }
+
 }
