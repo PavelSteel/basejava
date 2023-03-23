@@ -1,10 +1,15 @@
 package com.urise.webapp;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class MainConcurrency {
     public static final int THREADS = 10000;
     private static int counter;
+    private static final Lock lock = new ReentrantLock();
 
     public MainConcurrency() {
     }
@@ -21,20 +26,22 @@ public class MainConcurrency {
 
         final MainConcurrency mainConcurrency = new MainConcurrency();
         CountDownLatch latch = new CountDownLatch(THREADS);
+        ExecutorService executorService = Executors.newCachedThreadPool();
 //        List<Thread> list = new ArrayList<>(THREADS);
         for (int i = 0; i < THREADS; i++) {
-            Thread thread = new Thread(() -> {
+            executorService.submit(() -> {
+//            Thread thread = new Thread(() -> {
                 for (int j = 0; j < 100; j++) {
                     mainConcurrency.inc();
                 }
                 latch.countDown();
             });
-            thread.start();
+//            thread.start();
 //            list.add(thread);
         }
 //
         latch.await();
-
+        executorService.shutdownNow();
         System.out.println(counter);
 //
 //        String lock1 = "lock_1";
@@ -63,8 +70,13 @@ public class MainConcurrency {
 //        }).start();
 //    }
 
-    private synchronized void inc() {
-        counter++;
+    private void inc() {
+        lock.lock();
+        try {
+            counter++;
+        } finally {
+            lock.unlock();
+        }
     }
 
 }
