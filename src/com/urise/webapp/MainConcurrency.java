@@ -1,8 +1,10 @@
 package com.urise.webapp;
 
+import java.text.SimpleDateFormat;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -10,7 +12,13 @@ public class MainConcurrency {
     public static final int THREADS = 10000;
     private static int counter;
     private static final Lock lock = new ReentrantLock();
+    private static final AtomicInteger atomicCounter = new AtomicInteger();
 
+    private static final ThreadLocal<SimpleDateFormat> threadLocal = ThreadLocal.withInitial(() -> new SimpleDateFormat());
+
+    //ThreadLocal.withInitial(() -> new SimpleDateFormat("dd.MM.yyyy HH:mm:ss"));
+    //DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+    
     public MainConcurrency() {
     }
 
@@ -33,6 +41,7 @@ public class MainConcurrency {
 //            Thread thread = new Thread(() -> {
                 for (int j = 0; j < 100; j++) {
                     mainConcurrency.inc();
+//                    System.out.println(threadLocal.get().format(new Date()));
                 }
                 latch.countDown();
             });
@@ -42,8 +51,8 @@ public class MainConcurrency {
 //
         latch.await();
         executorService.shutdownNow();
-        System.out.println(counter);
-//
+//        System.out.println(counter);
+        System.out.println(atomicCounter.get());
 //        String lock1 = "lock_1";
 //        String lock2 = "lock_2";
 //        deadLocking(lock1, lock2);
@@ -71,12 +80,12 @@ public class MainConcurrency {
 //    }
 
     private void inc() {
-        lock.lock();
-        try {
-            counter++;
-        } finally {
-            lock.unlock();
-        }
+//        lock.lock();
+//        try {
+//            counter++;
+//        } finally {
+//            lock.unlock();
+//        }
+        atomicCounter.incrementAndGet();
     }
-
 }
