@@ -47,12 +47,11 @@ public class SqlStorage implements Storage {
     public Resume get(String uuid) {
         return sqlHelper.execute("SELECT * FROM resume r WHERE r.uuid = ?", ps -> {
             ps.setString(1, uuid);
-            ResultSet rs = ps.getResultSet();
+            ResultSet rs = ps.executeQuery();
             if (!rs.next()) {
                 throw new NotExistStorageException(uuid);
             }
-            Resume r = new Resume(uuid, rs.getString("full_name"));
-            return r;
+            return new Resume(uuid, rs.getString("full_name"));
         });
     }
 
@@ -70,12 +69,12 @@ public class SqlStorage implements Storage {
     @Override
     public List<Resume> getAllSorted() {
         return sqlHelper.execute("SELECT * FROM resume r ORDER BY full_name, uuid", ps -> {
-            ResultSet rs = ps.getResultSet();
-            List<Resume> list = new ArrayList<>();
+            ResultSet rs = ps.executeQuery();
+            List<Resume> resumes = new ArrayList<>();
             while (rs.next()) {
-                list.add(new Resume(rs.getString("uuid"), rs.getString("full_name")));
+                resumes.add(new Resume(rs.getString("uuid"), rs.getString("full_name")));
             }
-            return list;
+            return resumes;
         });
     }
 
