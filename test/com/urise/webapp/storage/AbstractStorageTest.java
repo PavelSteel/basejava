@@ -39,8 +39,10 @@ public abstract class AbstractStorageTest {
         R3 = new Resume(UUID_3, "Name3");
         R4 = new Resume(UUID_4, "Name4");
 
-//        R1.addContact(ContactType.MAIL, "mail_1@ya.ru");
-//        R1.addContact(ContactType.PHONE, "1234567");
+        R1.addContact(ContactType.MAIL, "mail_1@ya.ru");
+        R1.addContact(ContactType.PHONE, "1234567");
+        R4.addContact(ContactType.PHONE, "4444");
+        R4.addContact(ContactType.SKYPE, "Skype4");
 //        R1.addSection(SectionType.OBJECTIVE, new TextSection("Objective_1"));
 //        R1.addSection(SectionType.PERSONAL, new TextSection("Personal data"));
 //        R1.addSection(SectionType.ACHIEVEMENT, new ListSection("Achievement1", "Achievement2", "Achievement3"));
@@ -76,6 +78,9 @@ public abstract class AbstractStorageTest {
     @Test
     public void update() throws Exception {
         Resume newResume = new Resume(UUID_1, "NewName");
+        R1.addContact(ContactType.MAIL, "mail_1@gmail.com");
+        R1.addContact(ContactType.SKYPE, "Skype1");
+        R1.addContact(ContactType.MOBILE, "+7 921-772-59-43");
         storage.update(newResume);
         assertEquals(newResume, storage.get(UUID_1));
     }
@@ -123,7 +128,7 @@ public abstract class AbstractStorageTest {
         assertEquals(3, list.size());
         List<Resume> sortedResumes = Arrays.asList(R1, R2, R3);
         Collections.sort(sortedResumes);
-        assertEquals(list, sortedResumes);
+        assertEquals(sortedResumes, list);
     }
 
     @Test(expected = ExistStorageException.class)
