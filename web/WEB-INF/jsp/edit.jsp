@@ -52,7 +52,7 @@
                         </dl>
                         <dl>
                             <dt>Сайт учереждения</dt>
-                            <dd><input type="text" name="${type}_url" size=100 value="${org.homepage.url}"></dd>
+                            <dd><input type="text" name="${type}url" size=100 value="${org.homepage.url}"></dd>
                         </dl>
                         <br>
                         <div style="margin-left: 30px">

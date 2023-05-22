@@ -26,26 +26,26 @@ public class TestData {
         R3 = new Resume(UUID_3, "Name3");
         R4 = new Resume(UUID_4, "Name4");
 
-        R1.addContact(ContactType.MAIL, "mail_1@ya.ru");
-        R1.addContact(ContactType.PHONE, "1234567");
-        R4.addContact(ContactType.PHONE, "4444");
-        R4.addContact(ContactType.SKYPE, "Skype4");
-        R1.addSection(SectionType.OBJECTIVE, new TextSection("Objective_1"));
-        R1.addSection(SectionType.PERSONAL, new TextSection("Personal data"));
-        R1.addSection(SectionType.ACHIEVEMENT, new ListSection("Achievement1", "Achievement2", "Achievement3"));
-        R1.addSection(SectionType.QUALIFICATIONS, new ListSection("Java", "SQL", "Kotlin"));
-        R1.addSection(SectionType.EXPERIENCE, new OrganizationSection(
+        R1.setContact(ContactType.MAIL, "mail_1@ya.ru");
+        R1.setContact(ContactType.PHONE, "1234567");
+        R4.setContact(ContactType.PHONE, "4444");
+        R4.setContact(ContactType.SKYPE, "Skype4");
+        R1.setSection(SectionType.OBJECTIVE, new TextSection("Objective_1"));
+        R1.setSection(SectionType.PERSONAL, new TextSection("Personal data"));
+        R1.setSection(SectionType.ACHIEVEMENT, new ListSection("Achievement1", "Achievement2", "Achievement3"));
+        R1.setSection(SectionType.QUALIFICATIONS, new ListSection("Java", "SQL", "Kotlin"));
+        R1.setSection(SectionType.EXPERIENCE, new OrganizationSection(
                 new Organization("Organization1", "http://Organization1.ru",
                         new Organization.Position(2009, Month.APRIL, "position1", "content1"),
                         new Organization.Position(2007, Month.JUNE, 2008, Month.AUGUST, "position0", "content0"))));
-        R1.addSection(SectionType.EDUCATION, new OrganizationSection(
+        R1.setSection(SectionType.EDUCATION, new OrganizationSection(
                 new Organization("Institute", null,
                         new Organization.Position(2006, Month.JANUARY, 2008, Month.DECEMBER, "student", "Faculty of Law"),
                         new Organization.Position(2008, Month.SEPTEMBER, 2010, Month.AUGUST, "student", "ship mechanic faculty")),
                 new Organization("Organization2", "http://Organization2.ru")));
-        R2.addContact(ContactType.SKYPE, "Skype_1");
-        R2.addContact(ContactType.PHONE, "7654321");
-        R2.addSection(SectionType.EXPERIENCE, new OrganizationSection(
+        R2.setContact(ContactType.SKYPE, "Skype_1");
+        R2.setContact(ContactType.PHONE, "7654321");
+        R2.setSection(SectionType.EXPERIENCE, new OrganizationSection(
                 new Organization("Organization3", "http://Organization3.ru",
                         new Organization.Position(2011, Month.APRIL, "position1", "content1"))));
     }
