@@ -6,7 +6,6 @@ import com.urise.webapp.storage.Storage;
 import com.urise.webapp.util.DateUtil;
 import com.urise.webapp.util.HtmlUtil;
 
-
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,22 +13,105 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ResumeServlet extends HttpServlet {
 
+    private enum THEME {
+        dark, light, purple
+    }
+
     private Storage storage;
+    private final Set<String> themes = new HashSet<>();
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         storage = Config.get().getStorage();
+        for (THEME t : THEME.values()) {
+            themes.add(t.name());
+        }
     }
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        request.setCharacterEncoding("UTF-8");
+        String uuid = request.getParameter("uuid");
+        String fullName = request.getParameter("fullName");
+
+        final boolean isCreate = (uuid == null || uuid.length() == 0);
+        Resume r;
+        if (isCreate) {
+            r = new Resume(fullName);
+        } else {
+            Config.get().checkImmutable(uuid);
+            r = storage.get(uuid);
+            r.setFullName(fullName);
+        }
+
+        for (ContactType type : ContactType.values()) {
+            String value = request.getParameter(type.name());
+            if (HtmlUtil.isEmpty(value)) {
+                r.getContacts().remove(type);
+            } else {
+                r.setContact(type, value);
+            }
+        }
+        for (SectionType type : SectionType.values()) {
+            String value = request.getParameter(type.name());
+            String[] values = request.getParameterValues(type.name());
+            if (HtmlUtil.isEmpty(value) && values.length < 2) {
+                r.getSections().remove(type);
+            } else {
+                switch (type) {
+                    case OBJECTIVE:
+                    case PERSONAL:
+                        r.setSection(type, new TextSection(value));
+                        break;
+                    case ACHIEVEMENT:
+                    case QUALIFICATIONS:
+                        r.setSection(type, new ListSection(value.split("\\n")));
+                        break;
+                    case EDUCATION:
+                    case EXPERIENCE:
+                        List<Organization> orgs = new ArrayList<>();
+                        String[] urls = request.getParameterValues(type.name() + "url");
+                        for (int i = 0; i < values.length; i++) {
+                            String name = values[i];
+                            if (!HtmlUtil.isEmpty(name)) {
+                                List<Organization.Position> positions = new ArrayList<>();
+                                String pfx = type.name() + i;
+                                String[] startDates = request.getParameterValues(pfx + "startDate");
+                                String[] endDates = request.getParameterValues(pfx + "endDate");
+                                String[] titles = request.getParameterValues(pfx + "title");
+                                String[] descriptions = request.getParameterValues(pfx + "description");
+                                for (int j = 0; j < titles.length; j++) {
+                                    if (!HtmlUtil.isEmpty(titles[j])) {
+                                        positions.add(new Organization.Position(DateUtil.parse(startDates[j]), DateUtil.parse(endDates[j]), titles[j], descriptions[j]));
+                                    }
+                                }
+                                orgs.add(new Organization(new Link(name, urls[i]), positions));
+                            }
+                        }
+                        r.setSection(type, new OrganizationSection(orgs));
+                        break;
+                }
+            }
+        }
+        if (isCreate) {
+            storage.save(r);
+        } else {
+            storage.update(r);
+        }
+        response.sendRedirect("resume?theme=" + getTheme(request));
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         String uuid = request.getParameter("uuid");
         String action = request.getParameter("action");
+        request.setAttribute("theme", getTheme(request));
+
         if (action == null) {
             request.setAttribute("resumes", storage.getAllSorted());
             request.getRequestDispatcher("/WEB-INF/jsp/list.jsp").forward(request, response);
@@ -38,6 +120,7 @@ public class ResumeServlet extends HttpServlet {
         Resume r;
         switch (action) {
             case "delete":
+                Config.get().checkImmutable(uuid);
                 storage.delete(uuid);
                 response.sendRedirect("resume");
                 return;
@@ -84,7 +167,7 @@ public class ResumeServlet extends HttpServlet {
                 }
                 break;
             default:
-                throw new IllegalStateException("Action " + action + " is illegal");
+                throw new IllegalArgumentException("Action " + action + " is illegal");
         }
         request.setAttribute("resume", r);
         request.getRequestDispatcher(
@@ -92,75 +175,8 @@ public class ResumeServlet extends HttpServlet {
         ).forward(request, response);
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        String uuid = request.getParameter("uuid");
-        String fullName = request.getParameter("fullName");
-
-        final boolean isCreate = (uuid == null || uuid.length() == 0);
-        Resume r;
-        if (isCreate) {
-            r = new Resume(fullName);
-        } else {
-            r = storage.get(uuid);
-            r.setFullName(fullName);
-        }
-
-        for (ContactType type : ContactType.values()) {
-            String value = request.getParameter(type.name());
-            if (value != null && value.trim().length() != 0) {
-                r.setContact(type, value);
-            } else {
-                r.getContacts().remove(type);
-            }
-        }
-        for (SectionType type : SectionType.values()) {
-            String value = request.getParameter(type.name());
-            String[] values = request.getParameterValues(type.name());
-            if (HtmlUtil.isEmpty(value) && values.length < 2) {
-                r.getSections().remove(type);
-            } else {
-                switch (type) {
-                    case OBJECTIVE:
-                    case PERSONAL:
-                        r.setSection(type, new TextSection(value));
-                        break;
-                    case ACHIEVEMENT:
-                    case QUALIFICATIONS:
-                        r.setSection(type, new ListSection(value.split("\\n")));
-                        break;
-                    case EDUCATION:
-                    case EXPERIENCE:
-                        List<Organization> orgs = new ArrayList<>();
-                        String[] urls = request.getParameterValues(type.name() + "url");
-                        for (int i = 0; i < values.length; i++) {
-                            String name = values[i];
-                            if (!HtmlUtil.isEmpty(name)) {
-                                List<Organization.Position> positions = new ArrayList<>();
-                                String pfx = type.name() + i;
-                                String[] titles = request.getParameterValues(pfx + "title");
-                                String[] startDates = request.getParameterValues(pfx + "startDate");
-                                String[] endDates = request.getParameterValues(pfx + "endDate");
-                                String[] descriptions = request.getParameterValues(pfx + "description");
-                                for (int j = 0; j < titles.length; j++) {
-                                    if (!HtmlUtil.isEmpty(titles[j])){
-                                        positions.add(new Organization.Position(DateUtil.parse(startDates[j]), DateUtil.parse(endDates[j]), titles[j], descriptions[j]));
-                                    }
-                                }
-                                orgs.add(new Organization(new Link(name, urls[i]), positions));
-                            }
-                        }
-                        r.setSection(type, new OrganizationSection(orgs));
-                        break;
-                }
-            }
-        }
-        if (isCreate) {
-            storage.save(r);
-        } else {
-            storage.update(r);
-        }
-        response.sendRedirect("resume");
+    private String getTheme(HttpServletRequest request) {
+        String theme = request.getParameter("theme");
+        return themes.contains(theme) ? theme : THEME.light.name();
     }
 }
