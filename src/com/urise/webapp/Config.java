@@ -11,6 +11,7 @@ import java.util.Set;
 
 public class Config {
     private static final String PROPS = "/resumes.properties";
+//    private static final File PROPS = new File(getHomeDir(), "config/resumes.properties");
     private static final Config INSTANCE = new Config();
 
     private final File storageDir;
@@ -25,6 +26,7 @@ public class Config {
     }
 
     private Config() {
+//        try (InputStream is = new FileInputStream(PROPS)) {
         try (InputStream is = Config.class.getResourceAsStream(PROPS)) {
             Properties props = new Properties();
             props.load(is);
@@ -32,6 +34,7 @@ public class Config {
             storage = new SqlStorage(props.getProperty("db.url"), props.getProperty("db.user"), props.getProperty("db.password"));
         } catch (IOException e) {
             throw new IllegalStateException("Invalid config file " + PROPS);
+//            throw new IllegalStateException("Invalid config file " + PROPS.getAbsolutePath());
         }
     }
 
@@ -50,5 +53,14 @@ public class Config {
     public void checkImmutable(String uuids) {
         if (immutableUuids.contains(uuids))
             throw new RuntimeException("Зарезервированные резюме нельзя менять");
+    }
+
+    private static File getHomeDir() {
+        String prop = System.getProperty("homeDir");
+        File homeDir = new File(prop == null ? "." : prop);
+        if (!homeDir.isDirectory()) {
+            throw new IllegalStateException(homeDir + " is not directory");
+        }
+        return homeDir;
     }
 }

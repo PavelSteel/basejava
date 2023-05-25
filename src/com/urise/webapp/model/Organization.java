@@ -38,7 +38,7 @@ public class Organization implements Serializable {
         this.positions = positions;
     }
 
-    public Link getHomepage() {
+    public Link getHomePage() {
         return homepage;
     }
 

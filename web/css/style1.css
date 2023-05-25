@@ -1,14 +1,14 @@
 body{
-    background: blueviolet;
+    background: honeydew;
 }
 
 section {
-    width: 900px;
+    width: 100%;
     margin: auto;
 }
 
 header {
-    background: none repeat scroll 0 0 #A6C9E2;
+    background: none repeat scroll 0 0 gainsboro;
     color: #2E6E9E;
     font-size: 20px;
     padding: 5px 20px;
@@ -16,16 +16,21 @@ header {
 }
 
 footer {
-    background: none repeat scroll 0 0 #A6C9E2;
+    background: none repeat scroll 0 0 gainsboro;
     color: #2E6E9E;
     font-size: 20px;
+    text-align: center;
     padding: 5px 20px;
     margin: 20px 0;
-    text-align: center;
+}
+
+table{
+    border-color: honeydew;
+    border-collapse: collapse;
+    font-size: x-large;
 }
 
 dl {
-    background: none repeat scroll 0 0 #A6C9E2;
     margin: 8px 0;
     padding: 0;
 }
